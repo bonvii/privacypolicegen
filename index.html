@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore di Privacy Policy</title>
+    <style>
+        /* Fonts */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            font-size: 16px;
+            margin-top: 10px;
+            border: 2px solid transparent;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #555;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none; /* Start hidden */
+        }
+        .popup-content {
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            max-width: 90%;
+            width: 600px; /* Set your desired width */
+            overflow-y: auto;
+            border-radius: 5px;
+            position: relative;
+            color: #333;
+        }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #888;
+            font-size: 24px;
+        }
+        .popup-close:hover {
+            color: #333;
+        }
+        .copy-button {
+            display: block;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+        /* Custom Select */
+        .custom-select {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .custom-select select {
+            display: inline-block;
+            padding: 12px;
+            width: calc(100% - 32px); /* 32px accounts for arrow width */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #555;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .custom-select select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .custom-select::after {
+            content: '\25BC';
+            position: absolute;
+            top: 16px;
+            right: 10px;
+            color: #555;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generatore di Privacy Policy</h1>
+        
+        <form id="privacyForm">
+            <div class="form-group">
+                <label for="companyName">Nome della tua azienda:</label>
+                <input type="text" id="companyName" name="companyName" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Indirizzo email di contatto:</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="website">URL del tuo sito web:</label>
+                <input type="text" id="website" name="website" required>
+            </div>
+            <div class="form-group">
+                <label for="policyLength">Lunghezza del testo:</label>
+                <div class="custom-select">
+                    <select id="policyLength">
+                        <option value="short">Breve</option>
+                        <option value="medium">Medio</option>
+                        <option value="long">Lungo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" id="generateButton" class="button">Genera Privacy Policy</button>
+            </div>
+        </form>
+        
+    </div>
+
+    <!-- Popup -->
+    <div id="popupContainer" class="popup">
+        <div class="popup-content">
+            <span id="popupClose" class="popup-close">&times;</span>
+            <h2>Privacy Policy generata</h2>
+            <textarea id="generatedPolicy" rows="15" readonly style="width: 100%;"></textarea>
+            <button id="copyButton" class="copy-button">Copia</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to generate random sentences for privacy policy
+        function generateRandomSentences() {
+            var sentences = [
+                "La tua privacy è importante per noi.",
+                "Ci impegniamo a proteggere le tue informazioni personali.",
+                "Utilizziamo le informazioni solo per scopi specifici e legittimi.",
+                "Non condivideremo le tue informazioni con terze parti senza il tuo consenso.",
+                "Rispettiamo le leggi sulla privacy vigenti nel nostro paese.",
+                "Per maggiori dettagli sulla nostra politica sulla privacy, visita il nostro sito web."
+            ];
+            return sentences;
+        }
+
+        // Function to generate Privacy Policy text
+        function generatePrivacyPolicy(companyName, email, website, length) {
+            var intro = `Gentile utente, con la presente, ci impegniamo a rispettare e proteggere la tua privacy in conformità alle leggi vigenti. La tua azienda, ${companyName}, con indirizzo email ${email} e sito web ${website}, si impegna a proteggere le informazioni personali degli utenti. Per maggiori dettagli, visita il nostro sito web all'indirizzo ${website}. `;
+            
+            var loremLength;
+            switch (length) {
+                case 'short':
+                    loremLength = 1; // Pick 1 sentence for short
+                    break;
+                case 'medium':
+                    loremLength = 3; // Pick 3 sentences for medium
+                    break;
+                case 'long':
+                    loremLength = 5; // Pick 5 sentences for long
+                    break;
+                default:
+                    loremLength = 3;
+                    break;
+            }
+
+            var sentences = generateRandomSentences();
+            var selectedSentences = [];
+
+            // Randomly select sentences
+            for (var i = 0; i < loremLength; i++) {
+                var randomIndex = Math.floor(Math.random() * sentences.length);
+                selectedSentences.push(sentences[randomIndex]);
+            }
+
+            // Combine intro and selected sentences
+            var generatedText = intro + selectedSentences.join(' ');
+
+            return generatedText;
+        }
+        // Event listener for generate button click
+        document.getElementById('generateButton').addEventListener('click', function() {
+            var companyName = document.getElementById('companyName').value;
+            var email = document.getElementById('email').value;
+            var website = document.getElementById('website').value;
+            var length = document.getElementById('policyLength').value;
+
+            // Generate Privacy Policy text
+            var generatedText = generatePrivacyPolicy(companyName, email, website, length);
+
+            // Display generated text in the popup
+            var generatedPolicyTextarea = document.getElementById('generatedPolicy');
+            generatedPolicyTextarea.value = generatedText;
+
+            // Show the popup
+            var popup = document.getElementById('popupContainer');
+            popup.style.display = 'flex';
+        });
+
+        // Event listener for close button in popup
+        document.getElementById('popupClose').addEventListener('click', function() {
+            var popup = document.getElementById('popupContainer');
+            popup.style.display = 'none';
+        });
+
+        // Event listener for copy button in popup
+        document.getElementById('copyButton').addEventListener('click', function() {
+            var generatedPolicyTextarea = document.getElementById('generatedPolicy');
+            generatedPolicyTextarea.select();
+            document.execCommand('copy');
+            alert('Testo copiato negli appunti!');
+        });
+    </script>
+</body>
+</html>
